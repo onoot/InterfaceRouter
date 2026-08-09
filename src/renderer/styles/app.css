@@ -690,6 +690,43 @@ button { font-family: inherit; }
 }
 .table td { padding: 10px 12px; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
 
+/* ---------- соединения ---------- */
+.conn-summary { display: flex; align-items: center; gap: 12px; padding: 2px 0 12px; }
+.conn-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.conn-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface);
+  border-top: 0;
+}
+.conn-table td { vertical-align: middle; white-space: nowrap; }
+.conn-table tbody tr:last-child td { border-bottom: 0; }
+.conn-row { transition: opacity 0.35s var(--ease), background-color var(--ease); }
+.conn-row:hover td { background: var(--surface-2); }
+.conn-row.is-dead { opacity: 0.45; filter: grayscale(1); }
+.conn-row.is-dead td { border-bottom-color: transparent; }
+.conn__proc { font-size: 13px; font-weight: 700; color: var(--text); }
+.conn__pid { font-size: 11.5px; color: var(--faint); }
+.conn__addr { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; color: var(--text); }
+.conn__arrow { color: var(--faint); margin: 0 7px; }
+.conn__dead-label {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 /* ---------- прочее ---------- */
 .spinner {
   width: 18px;

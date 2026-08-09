@@ -201,6 +201,50 @@ if ($pids.Count -gt 0) {
   }
 }
 
+// Живой список всех TCP-соединений системы (вкладка «Соединения»).
+// Маппинг PID → имя процесса; исключаются локальные/служебные адреса.
+const CONNECTIONS_SCRIPT = `
+$procs = @{}
+Get-Process -ErrorAction SilentlyContinue | ForEach-Object { $procs[[int]$_.Id] = [string]$_.ProcessName }
+$conns = Get-NetTCPConnection -ErrorAction SilentlyContinue |
+  Where-Object { $_.RemoteAddress -and $_.RemoteAddress -notmatch '^(127\\.|0\\.|169\\.254\\.|::|fe80:)' } |
+  Sort-Object ProcessName, RemoteAddress |
+  Select-Object -First 500 |
+  ForEach-Object {
+    [PSCustomObject]@{
+      pid = [int]$_.OwningProcess
+      process = [string]$procs[[int]$_.OwningProcess]
+      local = [string]$_.LocalAddress
+      localPort = [int]$_.LocalPort
+      remote = [string]$_.RemoteAddress
+      remotePort = [int]$_.RemotePort
+      state = [string]$_.State
+    }
+  }
+@($conns) | ConvertTo-Json -Compress -Depth 3
+`;
+
+async function listConnections(log) {
+  const res = await runPowerShell(CONNECTIONS_SCRIPT, { timeout: 30000, silent: true, log });
+  if (!res.ok) return [];
+  try {
+    const parsed = JSON.parse(res.stdout || '[]');
+    return (Array.isArray(parsed) ? parsed : [parsed])
+      .filter((c) => c && typeof c === 'object')
+      .map((c) => ({
+        pid: Number(c.pid) || 0,
+        process: String(c.process || ''),
+        local: String(c.local || ''),
+        localPort: Number(c.localPort) || 0,
+        remote: String(c.remote || ''),
+        remotePort: Number(c.remotePort) || 0,
+        state: String(c.state || ''),
+      }));
+  } catch {
+    return [];
+  }
+}
+
 async function listProcessNames(log) {
   const res = await runPowerShell(
     'Get-Process -ErrorAction SilentlyContinue | Sort-Object ProcessName -Unique | Select-Object -ExpandProperty ProcessName',
@@ -314,6 +358,7 @@ module.exports = {
   applyRoutes,
   getProcessConnections,
   listProcessNames,
+  listConnections,
   resolveExecutablePath,
   isAdmin,
   relaunchAsAdmin,

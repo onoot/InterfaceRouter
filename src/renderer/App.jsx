@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar.jsx';
 import { StatusBar } from './components/StatusBar.jsx';
 import { RulesPage } from './components/RulesPage.jsx';
 import { InterfacesPage } from './components/InterfacesPage.jsx';
+import { ConnectionsPage } from './components/ConnectionsPage.jsx';
 import { TerminalPage } from './components/TerminalPage.jsx';
 import { SettingsPage } from './components/SettingsPage.jsx';
 import { Toaster } from './components/Toaster.jsx';
@@ -27,6 +28,7 @@ export default function App() {
       <div className="main">
         {tab === 'rules' ? <RulesPage /> : null}
         {tab === 'interfaces' ? <InterfacesPage /> : null}
+        {tab === 'connections' ? <ConnectionsPage /> : null}
         {tab === 'terminal' ? <TerminalPage /> : null}
         {tab === 'settings' ? <SettingsPage /> : null}
         <StatusBar />

@@ -46,5 +46,6 @@ contextBridge.exposeInMainWorld('api', {
   onLogsAppend: (cb) => subscribe(IPC.LogsAppend, cb),
   onRulesChanged: (cb) => subscribe(IPC.RulesChanged, cb),
   onInterfacesChanged: (cb) => subscribe(IPC.InterfacesChanged, cb),
+  onConnectionsChanged: (cb) => subscribe(IPC.ConnectionsChanged, cb),
   onStateChanged: (cb) => subscribe(IPC.StateChanged, cb),
 });

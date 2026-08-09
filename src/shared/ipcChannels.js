@@ -33,6 +33,7 @@ const IPC = {
   StateChanged: 'state:changed',
   RulesChanged: 'rules:changed',
   InterfacesChanged: 'interfaces:changed',
+  ConnectionsChanged: 'connections:changed',
 };
 
 module.exports = IPC;

@@ -8,6 +8,7 @@ let state = {
   rules: [],
   settings: null,
   interfaces: [],
+  connections: [],
   logs: [],
   admin: false,
   busy: {},
@@ -30,6 +31,7 @@ function normalize(s) {
   const next = { ...s };
   if (!Array.isArray(next.rules)) next.rules = [];
   if (!Array.isArray(next.interfaces)) next.interfaces = [];
+  if (!Array.isArray(next.connections)) next.connections = [];
   if (!Array.isArray(next.logs)) next.logs = [];
   if (!Array.isArray(next.toasts)) next.toasts = [];
   if (!next.busy || typeof next.busy !== 'object') next.busy = {};
@@ -72,7 +74,7 @@ export function setTab(tab) {
 function loadTab() {
   try {
     const saved = localStorage.getItem('ir.tab');
-    if (saved === 'rules' || saved === 'interfaces' || saved === 'terminal' || saved === 'settings') return saved;
+    if (saved === 'rules' || saved === 'interfaces' || saved === 'connections' || saved === 'terminal' || saved === 'settings') return saved;
   } catch {
     // ignore
   }

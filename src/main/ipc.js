@@ -19,6 +19,7 @@ function appState(ctx) {
     rules: state.rules,
     settings: state.settings,
     interfaces: state.interfaces,
+    connections: state.connections,
     admin: state.isAdmin,
     busy: state.busy,
     routingStatus: ctx.routing.getSummary(),
@@ -36,6 +37,7 @@ function registerIpc(ctx) {
   log.on('cleared', () => broadcast(IPC.LogsAppend, []));
   state.on('rules', (list) => broadcast(IPC.RulesChanged, list));
   state.on('interfaces', (list) => broadcast(IPC.InterfacesChanged, list));
+  state.on('connections', (list) => broadcast(IPC.ConnectionsChanged, list));
   state.on('settings', (s) => broadcast(IPC.StateChanged, { settings: s }));
   state.on('admin', (v) => broadcast(IPC.StateChanged, { admin: v }));
   state.on('busy', (b) => broadcast(IPC.StateChanged, { busy: b }));

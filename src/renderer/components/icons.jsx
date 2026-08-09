@@ -127,3 +127,9 @@ export const IconScan = (p) => (
     <path d="M8 21H5a2 2 0 0 1-2-2v-3" />
   </S>
 );
+
+export const IconPulse = (p) => (
+  <S {...p}>
+    <path d="M3 12h3l2.5-6 4 12 2.5-6H21" />
+  </S>
+);

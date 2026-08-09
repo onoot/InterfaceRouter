@@ -14,6 +14,7 @@ class AppState extends EventEmitter {
     this.settings = { ...DEFAULT_SETTINGS, ipCheckServices: JSON.parse(JSON.stringify(DEFAULT_SETTINGS.ipCheckServices)) };
     this.rules = [];
     this.interfaces = [];
+    this.connections = [];
     this.lastIpByInterface = {}; // ifIndex -> { ip, ts, previous }
     this.isAdmin = false;
     this.busy = {};
@@ -65,6 +66,11 @@ class AppState extends EventEmitter {
   setInterfaces(list) {
     this.interfaces = list;
     this.emit('interfaces', list);
+  }
+
+  setConnections(list) {
+    this.connections = list;
+    this.emit('connections', list);
   }
 
   setRules(rules) {

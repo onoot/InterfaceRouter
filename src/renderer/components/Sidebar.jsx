@@ -1,11 +1,12 @@
 import React from 'react';
 import { useApp, setTab } from '../store.js';
-import { IconRoutes, IconNetwork, IconTerminal, IconSettings } from './icons.jsx';
+import { IconRoutes, IconNetwork, IconPulse, IconTerminal, IconSettings } from './icons.jsx';
 import { relaunchAsAdmin } from '../api.js';
 
 const NAV = [
   { id: 'rules', label: 'Правила', icon: IconRoutes },
   { id: 'interfaces', label: 'Интерфейсы', icon: IconNetwork },
+  { id: 'connections', label: 'Соединения', icon: IconPulse },
   { id: 'terminal', label: 'Терминал', icon: IconTerminal },
   { id: 'settings', label: 'Настройки', icon: IconSettings },
 ];

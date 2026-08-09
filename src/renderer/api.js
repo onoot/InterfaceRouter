@@ -12,6 +12,7 @@ export async function initApi() {
     rules: Array.isArray(snap.rules) ? snap.rules : [],
     settings: snap.settings || null,
     interfaces: Array.isArray(snap.interfaces) ? snap.interfaces : [],
+    connections: Array.isArray(snap.connections) ? snap.connections : [],
     admin: Boolean(snap.admin),
     busy: snap.busy || {},
     routingStatus: snap.routingStatus || {},
@@ -31,6 +32,8 @@ export async function initApi() {
   api.onRulesChanged((rules) => setSafe({ rules }));
 
   api.onInterfacesChanged((interfaces) => setSafe({ interfaces }));
+
+  api.onConnectionsChanged((connections) => setSafe({ connections }));
 
   api.onStateChanged((patch) => setSafe(patch));
 }

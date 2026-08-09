@@ -8,6 +8,7 @@ const RuleService = require('./services/ruleService');
 const SettingsService = require('./services/settingsService');
 const RoutingService = require('./services/routingService');
 const ProcessService = require('./services/processService');
+const ConnectionService = require('./services/connectionService');
 const { registerIpc } = require('./ipc');
 const admin = require('./utils/admin');
 const { FileLogger } = require('./utils/fileLogger');
@@ -46,6 +47,7 @@ if (!gotLock) {
     else ctx.log.error(`Не удалось получить список интерфейсов: ${ifaceRes.error}`);
 
     ctx.routing.start();
+    ctx.connections.start();
     startPeriodicIpCheck();
   });
 
@@ -55,6 +57,7 @@ if (!gotLock) {
 
   app.on('before-quit', () => {
     if (ctx && ctx.routing) ctx.routing.stop();
+    if (ctx && ctx.connections) ctx.connections.stop();
     if (ipCheckTimer) clearInterval(ipCheckTimer);
   });
 
@@ -83,6 +86,7 @@ function buildContext() {
   ctx.rules = new RuleService(ctx);
   ctx.settings = new SettingsService(ctx);
   ctx.routing = new RoutingService(ctx);
+  ctx.connections = new ConnectionService(ctx);
   return ctx;
 }
 
