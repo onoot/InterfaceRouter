@@ -75,7 +75,53 @@ button { font-family: inherit; }
 ::-webkit-scrollbar-thumb:hover { background: var(--faint); }
 
 /* ---------- каркас приложения ---------- */
-.app { display: flex; height: 100%; }
+.app { display: flex; flex-direction: column; height: 100%; }
+
+.app__body { display: flex; flex: 1; min-height: 0; }
+
+/* ---------- кастомный тайтлбар (frame: false) ---------- */
+.titlebar {
+  flex: none;
+  height: 38px;
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.titlebar__drag {
+  flex: 1;
+  min-width: 0;
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+}
+.titlebar__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.titlebar__controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+}
+.titlebar__btn {
+  width: 46px;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.titlebar__btn:hover { background: var(--line-soft); color: var(--text-strong); }
+.titlebar__btn:active { background: var(--surface-3); }
+.titlebar__btn--close:hover { background: #e81123; color: #fff; }
+.titlebar__btn--close:active { background: #bf0f1e; color: #fff; }
 
 .sidebar {
   flex: none;

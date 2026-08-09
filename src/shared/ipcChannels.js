@@ -28,6 +28,12 @@ const IPC = {
   LogsGet: 'logs:get',
   LogsClear: 'logs:clear',
 
+  // Управление окном (кастомный тайтлбар)
+  WindowMinimize: 'window:minimize',
+  WindowToggleMaximize: 'window:toggleMaximize',
+  WindowClose: 'window:close',
+  WindowMaximizedChanged: 'window:maximizedChanged',
+
   // Публикации (push events в renderer)
   LogsAppend: 'logs:append',
   StateChanged: 'state:changed',

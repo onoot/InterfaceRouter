@@ -16,6 +16,7 @@ class AppState extends EventEmitter {
     this.interfaces = [];
     this.connections = [];
     this.lastIpByInterface = {}; // ifIndex -> { ip, ts, previous }
+    this.appliedRoutes = []; // [{ key, family, dest, prefix, ifIndex, ruleId, ruleName }]
     this.isAdmin = false;
     this.busy = {};
     this.initialized = false;
@@ -42,6 +43,7 @@ class AppState extends EventEmitter {
         }
         if (Array.isArray(raw.rules)) this.rules = raw.rules;
         if (raw.lastIpByInterface) this.lastIpByInterface = raw.lastIpByInterface;
+        if (Array.isArray(raw.appliedRoutes)) this.appliedRoutes = raw.appliedRoutes;
       }
     } catch (e) {
       this.emit('warn', { message: `Не удалось загрузить сохранённые данные: ${e.message}` });
@@ -56,6 +58,7 @@ class AppState extends EventEmitter {
         settings: this.settings,
         rules: this.rules,
         lastIpByInterface: this.lastIpByInterface,
+        appliedRoutes: this.appliedRoutes,
       };
       fs.writeFileSync(this.dataFile, JSON.stringify(data, null, 2), 'utf8');
     } catch (e) {
@@ -100,6 +103,15 @@ class AppState extends EventEmitter {
     this.lastIpByInterface[String(ifIndex)] = snapshot;
     this.save();
     this.emit('ipSnapshot', { ifIndex, snapshot });
+  }
+
+  getAppliedRoutes() {
+    return this.appliedRoutes || [];
+  }
+
+  setAppliedRoutes(list) {
+    this.appliedRoutes = list;
+    this.save();
   }
 }
 

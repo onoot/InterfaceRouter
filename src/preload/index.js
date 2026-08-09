@@ -42,6 +42,12 @@ contextBridge.exposeInMainWorld('api', {
   getLogs: () => ipcRenderer.invoke(IPC.LogsGet),
   clearLogs: () => ipcRenderer.invoke(IPC.LogsClear),
 
+  // управление окном (кастомный тайтлбар)
+  windowMinimize: () => ipcRenderer.send(IPC.WindowMinimize),
+  windowToggleMaximize: () => ipcRenderer.send(IPC.WindowToggleMaximize),
+  windowClose: () => ipcRenderer.send(IPC.WindowClose),
+  onWindowMaximized: (cb) => subscribe(IPC.WindowMaximizedChanged, cb),
+
   // подписки (push)
   onLogsAppend: (cb) => subscribe(IPC.LogsAppend, cb),
   onRulesChanged: (cb) => subscribe(IPC.RulesChanged, cb),

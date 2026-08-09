@@ -150,6 +150,20 @@ function registerIpc(ctx) {
     log.clear();
     return { ok: true };
   });
+
+  // Кнопки кастомного тайтлбара (fire-and-forget, окно одно)
+  ipcMain.on(IPC.WindowMinimize, (event) => {
+    BrowserWindow.fromWebContents(event.sender)?.minimize();
+  });
+  ipcMain.on(IPC.WindowToggleMaximize, (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (!win) return;
+    if (win.isMaximized()) win.unmaximize();
+    else win.maximize();
+  });
+  ipcMain.on(IPC.WindowClose, (event) => {
+    BrowserWindow.fromWebContents(event.sender)?.close();
+  });
 }
 
 module.exports = { registerIpc, appState };

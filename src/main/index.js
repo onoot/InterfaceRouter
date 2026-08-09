@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const IPC = require('../shared/ipcChannels');
 const AppState = require('./services/stateService');
 const Logger = require('./services/loggerService');
 const InterfaceService = require('./services/interfaceService');
@@ -98,6 +99,7 @@ function createWindow() {
     minHeight: 660,
     backgroundColor: '#0b0b0f',
     title: 'Interface Router',
+    frame: false,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -109,6 +111,10 @@ function createWindow() {
   });
 
   mainWindow.once('ready-to-show', () => mainWindow.show());
+
+  // Состояние максимизации для кастомного тайтлбара (иконка развернуть/восстановить)
+  mainWindow.on('maximize', () => mainWindow.webContents.send(IPC.WindowMaximizedChanged, true));
+  mainWindow.on('unmaximize', () => mainWindow.webContents.send(IPC.WindowMaximizedChanged, false));
 
   const isDev = process.argv.includes('--dev');
   if (isDev) {

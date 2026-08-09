@@ -27,6 +27,7 @@ class RoutingService {
 
   start() {
     this.stop();
+    this.restoreApplied();
     const settings = this.state.settings;
     this.timers.appPoll = setInterval(() => this.scheduleRecompute('poll'), settings.appPollIntervalMs);
     this.timers.domainRefresh = setInterval(() => {
@@ -34,6 +35,22 @@ class RoutingService {
       this.scheduleRecompute('dns-refresh');
     }, settings.domainResolveIntervalMin * 60 * 1000);
     this.scheduleRecompute('start');
+  }
+
+  // Восстановление применённых маршрутов из персистентного слоя: осиротевшие
+  // маршруты (оставшиеся от прошлых сессий, но уже не нужные) будут убраны
+  // первым же reconcile.
+  restoreApplied() {
+    const restored = new Map();
+    for (const item of this.state.getAppliedRoutes()) {
+      if (!item || !item.dest) continue;
+      const key = item.key || `${item.family}:${item.dest}`;
+      restored.set(key, { ...item, key });
+    }
+    this.applied = restored;
+    if (this.applied.size) {
+      this.log.info(`Восстановлено ${this.applied.size} применённых маршрутов из прошлой сессии`);
+    }
   }
 
   stop() {
@@ -264,6 +281,13 @@ class RoutingService {
     }
 
     this.lastReconcileTs = Date.now();
+    this.persistApplied();
+  }
+
+  persistApplied() {
+    this.state.setAppliedRoutes(
+      [...this.applied.entries()].map(([key, value]) => ({ key, ...value }))
+    );
   }
 
   getSummary() {

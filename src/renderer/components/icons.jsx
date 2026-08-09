@@ -133,3 +133,18 @@ export const IconPulse = (p) => (
     <path d="M3 12h3l2.5-6 4 12 2.5-6H21" />
   </S>
 );
+
+export const IconMinimize = (p) => (
+  <S {...p}><path d="M5 12h14" /></S>
+);
+
+export const IconMaximize = (p) => (
+  <S {...p}><rect x="5" y="5" width="14" height="14" rx="1.5" /></S>
+);
+
+export const IconRestore = (p) => (
+  <S {...p}>
+    <rect x="4" y="8" width="12" height="12" rx="1.5" />
+    <path d="M8 4.5h9a2.5 2.5 0 0 1 2.5 2.5v9" />
+  </S>
+);

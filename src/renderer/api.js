@@ -36,6 +36,21 @@ export async function initApi() {
   api.onConnectionsChanged((connections) => setSafe({ connections }));
 
   api.onStateChanged((patch) => setSafe(patch));
+
+  api.onWindowMaximized((maximized) => set({ isMaximized: Boolean(maximized) }));
+}
+
+// Управление окном (кастомный тайтлбар)
+export function minimizeWindow() {
+  api.windowMinimize();
+}
+
+export function toggleMaximizeWindow() {
+  api.windowToggleMaximize();
+}
+
+export function closeWindow() {
+  api.windowClose();
 }
 
 export async function refreshInterfaces() {

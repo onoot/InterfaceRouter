@@ -16,6 +16,7 @@ let state = {
   lastIpByInterface: {},
   appVersion: '',
   logsPath: '',
+  isMaximized: false,
   initialized: false,
   initError: null,
   toasts: [],

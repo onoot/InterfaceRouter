@@ -9,6 +9,7 @@ import { TerminalPage } from './components/TerminalPage.jsx';
 import { SettingsPage } from './components/SettingsPage.jsx';
 import { Toaster } from './components/Toaster.jsx';
 import { ErrorScreen } from './components/ErrorScreen.jsx';
+import { TitleBar } from './components/TitleBar.jsx';
 
 export default function App() {
   const { tab, initError } = useApp();
@@ -24,14 +25,17 @@ export default function App() {
 
   return (
     <div className="app">
-      <Sidebar />
-      <div className="main">
-        {tab === 'rules' ? <RulesPage /> : null}
-        {tab === 'interfaces' ? <InterfacesPage /> : null}
-        {tab === 'connections' ? <ConnectionsPage /> : null}
-        {tab === 'terminal' ? <TerminalPage /> : null}
-        {tab === 'settings' ? <SettingsPage /> : null}
-        <StatusBar />
+      <TitleBar />
+      <div className="app__body">
+        <Sidebar />
+        <div className="main">
+          {tab === 'rules' ? <RulesPage /> : null}
+          {tab === 'interfaces' ? <InterfacesPage /> : null}
+          {tab === 'connections' ? <ConnectionsPage /> : null}
+          {tab === 'terminal' ? <TerminalPage /> : null}
+          {tab === 'settings' ? <SettingsPage /> : null}
+          <StatusBar />
+        </div>
       </div>
       <Toaster />
     </div>
