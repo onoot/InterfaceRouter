@@ -27,3 +27,11 @@
 - 2 «осиротевших» IPv6-маршрута OpenCode (`2606:4700:78::90:0:140/142` → интерфейс #9), добавленные старым кодом, остались в таблице маршрутизации. Автогрязь не делает.
 - Очистка осиротевших маршрутов при старте (сверка реальной таблицы с applied) — кандидат в TODO.
 
+## 2026-08-10 — Скрипты сборки под все платформы
+
+- `package.json`: скрипты `dist:win`, `dist:mac`, `dist:linux`, `dist:all`, `pack`; конфиг electron-builder для Windows (NSIS+portable, x64, `requestedExecutionLevel: highestAvailable`), macOS (dmg+zip, x64+arm64), Linux (AppImage+deb+rpm).
+- Иконка: сгенерирован `build/icon.png` (512×512, тёмный скруглённый квадрат, три фиолетовых узла) — из него electron-builder сам делает `.ico`/`.icns`.
+- **Найденная проблема Windows**: `winCodeSign`-архив содержит symlink'и; распаковка в не-админ-терминале падает (`Cannot create symbolic link`). Сборку Windows нужно запускать из терминала администратора (или включить Developer Mode).
+- `npm run build` (Vite) + `npx electron-builder --win --dir` протестированы: упаковка прошла, споткнулись только на правах winCodeSign. Полную `dist:win` собирает пользователь в админ-терминале.
+
+

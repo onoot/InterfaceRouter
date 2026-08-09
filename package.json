@@ -11,11 +11,20 @@
     "build": "vite build",
     "start": "npm run build && electron .",
     "smoke": "vite build && set SMOKE_TEST=1&& electron .",
-    "dist": "npm run build && electron-builder"
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:all": "npm run build && electron-builder -mwl"
   },
   "build": {
     "appId": "dev.interfacerouter.app",
     "productName": "Interface Router",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
     "files": [
       "dist/**/*",
       "src/main/**/*",
@@ -23,12 +32,36 @@
       "src/shared/**/*",
       "package.json"
     ],
-    "directories": {
-      "output": "release"
-    },
     "win": {
-      "target": "nsis",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
       "requestedExecutionLevel": "highestAvailable"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Interface Router",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] },
+        { "target": "zip", "arch": ["x64", "arm64"] }
+      ],
+      "category": "public.app-category.utilities",
+      "darkModeSupport": true
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "rpm"],
+      "category": "Network",
+      "maintainer": "Interface Router <penisxuei@email.com>",
+      "synopsis": "Назначение приложений и доменов на сетевой интерфейс",
+      "description": "Interface Router — назначение приложений и доменов на конкретный сетевой интерфейс компьютера."
     }
   },
   "devDependencies": {

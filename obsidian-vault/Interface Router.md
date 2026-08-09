@@ -23,6 +23,22 @@ npm run smoke     # сборка + electron с SMOKE_TEST=1
 npm run dist      # сборка установщика (electron-builder, NSIS)
 ```
 
+## Сборка дистрибутивов
+
+| Команда | Платформа | Артефакты |
+|---|---|---|
+| `npm run dist:win` | Windows | NSIS-установщик + portable `.exe` (x64) |
+| `npm run dist:mac` | macOS | `.dmg` + `.zip` (x64 + arm64) |
+| `npm run dist:linux` | Linux | `.AppImage`, `.deb`, `.rpm` |
+| `npm run dist:all` | все | `-mwl` (кросс-сборка ограничена ОС) |
+| `npm run pack` | текущая | unpacked-каталог (быстрая проверка) |
+
+**Важно про права:**
+- `electron-builder` распаковывает `winCodeSign` (для иконки/версии/manifest в `.exe`) — требует прав на создание символических ссылок. На Windows сборка должна запускаться **из терминала администратора** (иначе ошибка `Cannot create symbolic link`). Либо включите Developer Mode.
+- Подпись: Windows-код не подписан; для macOS без сертификата сборка работает с `CSC_IDENTITY_AUTO_DISCOVERY=false`.
+- Иконка: один `build/icon.png` (512×512) — electron-builder сам генерирует `.ico`/`.icns`.
+- Артефакты пишутся в `release/` (в git не входит).
+
 ## Структура
 
 ```
