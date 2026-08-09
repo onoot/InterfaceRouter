@@ -1,0 +1,50 @@
+{
+  "name": "interface-router",
+  "productName": "Interface Router",
+  "version": "1.0.0",
+  "description": "Назначение приложений и доменов на конкретный сетевой интерфейс компьютера",
+  "main": "src/main/index.js",
+  "author": "InterfaceRouter",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently -k -n vite,electron -c blue,magenta \"vite\" \"wait-on tcp:5173 && electron . --dev\"",
+    "build": "vite build",
+    "start": "npm run build && electron .",
+    "smoke": "vite build && set SMOKE_TEST=1&& electron .",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "dev.interfacerouter.app",
+    "productName": "Interface Router",
+    "files": [
+      "dist/**/*",
+      "src/main/**/*",
+      "src/preload/**/*",
+      "src/shared/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "requestedExecutionLevel": "highestAvailable"
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "vite": "^5.4.11",
+    "wait-on": "^8.0.1"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "allowScripts": {
+    "electron@33.4.11": true,
+    "esbuild@0.21.5": true
+  }
+}
