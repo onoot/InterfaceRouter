@@ -12,15 +12,21 @@ PowerShell/netsh/route ── platform (windows.js) ── services ── state
                                    renderer (store.js) ── React components
 ```
 
-- **stateService** — единый источник состояния (EventEmitter), владеет `rules`, `interfaces`, `settings`, `status`, `terminalLines`.
+- **stateService** — единый источник состояния (EventEmitter), владеет `rules`, `interfaces`, `settings`, `status`, `terminalLines`, `appliedRoutes`.
 - **ipc.js** — регистрирует `ipcMain.handle` для команд (`get-state`, `create-rule`, ...) и рассылает события в renderer.
 - **preload** — только нужные функции через `contextBridge`; без `nodeIntegration`.
+
+## Окно (кастомный тайтлбар)
+
+- `BrowserWindow` создаётся с `frame: false`; управление — через IPC: `window:minimize`, `window:toggleMaximize`, `window:close` (ipcMain.on, fire-and-forget).
+- Состояние максимизации пушится из main (`maximize`/`unmaximize` → `window:maximizedChanged`) в `store.isMaximized`.
+- `TitleBar.jsx` — drag-зона (`-webkit-app-region: drag`) + кнопки; двойной клик по drag-зоне обрабатывает нативно Electron.
 
 ## Сервисы (src/main/services)
 
 | Сервис | Роль |
 |---|---|
-| `routingService` | Собирает «желаемое» множество маршрутов и применяет diff через `platform.applyRoutes`. |
+| `routingService` | Собирает «желаемое» множество маршрутов и применяет diff через `platform.applyRoutes`. Применённые маршруты персистятся через `state.getAppliedRoutes()/setAppliedRoutes()`: при старте `restoreApplied()` восстанавливает их, осиротевшие убираются первым reconcile. |
 | `ruleService` | CRUD правил. |
 | `interfaceService` | Перечисление сетевых интерфейсов (`Get-NetAdapter`). |
 | `ipCheckService` | Проверка внешнего IP (`curl`) — привязка к интерфейсу. |

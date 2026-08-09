@@ -33,8 +33,9 @@ npm run dist      # сборка установщика (electron-builder, NSIS)
 | `npm run dist:all` | все | `-mwl` (кросс-сборка ограничена ОС) |
 | `npm run pack` | текущая | unpacked-каталог (быстрая проверка) |
 
-**Важно про права:**
-- `electron-builder` распаковывает `winCodeSign` (для иконки/версии/manifest в `.exe`) — требует прав на создание символических ссылок. На Windows сборка должна запускаться **из терминала администратора** (иначе ошибка `Cannot create symbolic link`). Либо включите Developer Mode.
+**Важно про права и сеть:**
+- `electron-builder` распаковывает `winCodeSign` (для иконки/версии/manifest в `.exe`) — требует прав на создание символических ссылок. Если кэш уже прогрет (есть `Cache\winCodeSign\winCodeSign-2.6.0`), распаковка не нужна, сборка идёт из обычного терминала.
+- Если github.com недоступен, бинарники качаются с зеркала через `.npmrc` (`electron_builder_binaries_mirror=https://npmmirror.com/mirrors/electron-builder-binaries/`). Зеркало поддерживают и JS-часть (`binDownload.js`), и Go-часть app-builder (`tool.go`).
 - Подпись: Windows-код не подписан; для macOS без сертификата сборка работает с `CSC_IDENTITY_AUTO_DISCOVERY=false`.
 - Иконка: один `build/icon.png` (512×512) — electron-builder сам генерирует `.ico`/`.icns`.
 - Артефакты пишутся в `release/` (в git не входит).
