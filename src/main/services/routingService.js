@@ -238,7 +238,9 @@ class RoutingService {
           if (found) this.applied.delete(found.key);
           this.log.ok(`Маршрут убран: ${op.dest} (интерфейс #${op.ifIndex}, правило «${found?.ruleName || '?'}»)${op.out ? ` — ${op.out.trim()}` : ''}`);
         } else {
-          this.log.error(`Не удалось убрать маршрут ${op.dest}: ${op.out.trim() || 'неизвестная ошибка'}`);
+          const found = toRemove.find((r) => r.family === op.family && r.dest === op.dest);
+          if (found) this.applied.delete(found.key);
+          this.log.error(`Не удалось убрать маршрут ${op.dest} (интерфейс #${op.ifIndex}, правило «${found?.ruleName || '?'}») — считаю удалённым: ${op.out.trim() || 'неизвестная ошибка'}`);
         }
       } else {
         const exists = /already|exists|уже|существует/i.test(op.out);
