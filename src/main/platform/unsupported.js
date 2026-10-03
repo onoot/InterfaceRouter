@@ -13,6 +13,10 @@ module.exports = {
     return [];
   },
 
+  async breakConnections() {
+    return { ok: true, broken: [] };
+  },
+
   async getProcessConnections() {
     return [];
   },

@@ -23,6 +23,7 @@ if (platform === 'win32') {
 //   name, label, supported
 //   listInterfaces(log) -> { ok, interfaces: [Iface], error? }
 //   applyRoutes(toRemove, toAdd, opts) -> [RouteResult]
+//   breakConnections(ips, log) -> { ok, broken: [ip] }  (опционально)
 //   getProcessConnections(name, log) -> [ip]
 //   listProcessNames(log) -> [name]
 //   isAdmin() -> bool

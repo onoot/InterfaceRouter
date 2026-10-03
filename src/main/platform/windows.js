@@ -277,6 +277,67 @@ $lnk = $sh.CreateShortcut('${safe}')
 
 // ---------- маршруты ----------
 
+// Разрыв существующих TCP-соединений к заданным адресам без закрытия процессов:
+// кратковременно создаётся блок-правило Windows Firewall (Action=Block) — стек
+// отправляет RST и соединение закрывается, затем правило удаляется. Приложение
+// остаётся запущенным и переподключается уже по новым маршрутам.
+async function breakConnections(ips, log) {
+  const targets = (Array.isArray(ips) ? ips : [])
+    .map((x) => String(x || '').trim().toLowerCase())
+    .filter((x) => x && /^[0-9a-f:.]+$/.test(x))
+    .filter((x, i, a) => a.indexOf(x) === i);
+  if (targets.length === 0) return { ok: true, broken: [], failed: 0 };
+
+  const script = `
+Remove-NetFirewallRule -DisplayName 'IRBreak_*' -ErrorAction SilentlyContinue
+$targets = @(${targets.map((t) => `'${t}'`).join(',')})
+$live = @(Get-NetTCPConnection -State Established -ErrorAction SilentlyContinue |
+  Where-Object { $_.RemoteAddress -and $targets -contains ([string]$_.RemoteAddress).ToLower() } |
+  Select-Object -ExpandProperty RemoteAddress -Unique |
+  ForEach-Object { [string]$_ })
+$done = @()
+$created = @()
+$failed = 0
+foreach ($ip in $live) {
+  $rn = 'IRBreak_' + [guid]::NewGuid().ToString('N').Substring(0, 10)
+  try {
+    New-NetFirewallRule -DisplayName $rn -Direction Outbound -RemoteAddress $ip -Action Block -ErrorAction Stop | Out-Null
+    $done += $ip
+    $created += $rn
+  } catch {
+    $failed += 1
+  }
+}
+if ($created.Count -gt 0) {
+  Start-Sleep -Milliseconds 800
+  foreach ($rn in $created) {
+    Remove-NetFirewallRule -DisplayName $rn -ErrorAction SilentlyContinue | Out-Null
+  }
+}
+[PSCustomObject]@{ broken = @($done); failed = $failed } | ConvertTo-Json -Compress
+`;
+  const res = await runPowerShell(script, { timeout: 30000, silent: true, log });
+  if (!res.ok) {
+    if (typeof log === 'function') {
+      log({ level: 'warn', message: `Разрыв соединений не выполнен: ${res.stderr || res.stdout || 'неизвестная ошибка'}` });
+    }
+    return { ok: false, error: res.stderr || res.stdout, broken: [], failed: 0 };
+  }
+  try {
+    const parsed = JSON.parse(res.stdout || '{"broken":[],"failed":0}');
+    return {
+      ok: true,
+      broken: Array.isArray(parsed.broken) ? parsed.broken.filter((x) => typeof x === 'string') : [],
+      failed: Number(parsed.failed) || 0,
+    };
+  } catch (e) {
+    if (typeof log === 'function') {
+      log({ level: 'warn', message: `Ошибка разбора результата разрыва соединений: ${e.message}` });
+    }
+    return { ok: true, broken: [], failed: 0 };
+  }
+}
+
 async function applyRoutes(toRemove, toAdd, opts) {
   const persistent = Boolean(opts.persistent);
   const ops = [
@@ -356,6 +417,7 @@ module.exports = {
   resolveRouteForTarget,
   getInterfaceIpv4,
   applyRoutes,
+  breakConnections,
   getProcessConnections,
   listProcessNames,
   listConnections,

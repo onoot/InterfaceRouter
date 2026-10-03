@@ -25,6 +25,7 @@ const DEFAULT_SETTINGS = {
   appPollIntervalMs: 5000,
   domainResolveIntervalMin: 10,
   persistentRoutes: false,
+  breakConnectionsOnSwitch: true,
   maxRulesLogEntries: 4000,
   maxDomainsPerRule: 100,
 };

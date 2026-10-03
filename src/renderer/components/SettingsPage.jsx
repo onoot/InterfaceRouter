@@ -142,6 +142,16 @@ export function SettingsPage() {
 
           <div className="set-row">
             <div>
+              <div className="set-row__label">Разрывать соединения при изменении маршрутов</div>
+              <div className="set-row__hint">Кратковременный блок в брандмауэре сбрасывает активные соединения к изменившимся адресам — они переподключаются по новым маршрутам. Процессы не закрываются.</div>
+            </div>
+            <div className="set-row__ctl" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Switch checked={draft.breakConnectionsOnSwitch} onChange={(v) => set('breakConnectionsOnSwitch', v)} />
+            </div>
+          </div>
+
+          <div className="set-row">
+            <div>
               <div className="set-row__label">Максимум адресов на правило</div>
               <div className="set-row__hint">Ограничение числа маршрутов, добавляемых для одного домена или приложения</div>
             </div>

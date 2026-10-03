@@ -28,6 +28,7 @@ class SettingsService {
     if (patch.appPollIntervalMs !== undefined) next.appPollIntervalMs = clampInt(patch.appPollIntervalMs, 2000, 60000, 5000);
     if (patch.domainResolveIntervalMin !== undefined) next.domainResolveIntervalMin = clampInt(patch.domainResolveIntervalMin, 1, 120, 10);
     if (patch.persistentRoutes !== undefined) next.persistentRoutes = Boolean(patch.persistentRoutes);
+    if (patch.breakConnectionsOnSwitch !== undefined) next.breakConnectionsOnSwitch = Boolean(patch.breakConnectionsOnSwitch);
     if (patch.maxDomainsPerRule !== undefined) next.maxDomainsPerRule = clampInt(patch.maxDomainsPerRule, 1, 1000, 100);
 
     this.state.setSettings(next);

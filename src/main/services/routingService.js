@@ -280,8 +280,34 @@ class RoutingService {
       }
     }
 
+    await this.breakChangedConnections(results);
+
     this.lastReconcileTs = Date.now();
     this.persistApplied();
+  }
+
+  // Сброс существующих соединений к адресам, чьи маршруты изменились: Windows
+  // держит установленные TCP-соединения на старом пути даже после правки таблицы
+  // маршрутов. Временный firewall-блок (RST) заставляет их переподключиться уже
+  // по новым маршрутам — процессы при этом не закрываются.
+  async breakChangedConnections(results) {
+    if (!this.state.settings.breakConnectionsOnSwitch) return;
+    if (typeof platform.breakConnections !== 'function') return;
+
+    const affected = (results || [])
+      .filter((op) => op.code === 0 || (op.kind === 'add' && /already|exists|уже|существует/i.test(op.out)))
+      .map((op) => op.dest);
+    if (affected.length === 0) return;
+
+    const unique = [...new Set(affected)];
+    const res = await platform.breakConnections(unique, (e) => this.log.command(e));
+    if (res && Array.isArray(res.broken) && res.broken.length) {
+      this.log.warn(`Сброшены соединения (${res.broken.length}) для ${res.broken.join(', ')} — переподключение пойдёт по новым маршрутам`);
+    } else if (res && res.failed) {
+      this.log.warn(`Разрыв соединений: для ${res.failed} адресов не удалось создать блок-правило (нужны права администратора)`);
+    } else if (res && res.ok) {
+      this.log.info(`Сброс соединений: активных подключений к изменённым адресам не найдено`);
+    }
   }
 
   persistApplied() {
